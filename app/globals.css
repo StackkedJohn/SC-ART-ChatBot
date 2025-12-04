@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand Colors:
+       - Primary/Accent: #f1737a (coral/salmon pink) - HSL(357, 79%, 69%)
+       - Dark/Text: #363636 (dark charcoal gray) - HSL(0, 0%, 21%)
+       - Light/Background: #ffeec6 (cream/light yellow) - HSL(44, 100%, 89%)
+    */
+
+    /* Background colors - using cream as primary background */
+    --background: 44 100% 89%;
+    --foreground: 0 0% 21%;
+
+    /* Card colors - slightly lighter cream for elevation */
+    --card: 44 100% 95%;
+    --card-foreground: 0 0% 21%;
+
+    /* Popover colors */
+    --popover: 44 100% 95%;
+    --popover-foreground: 0 0% 21%;
+
+    /* Primary colors - coral/salmon pink for interactive elements */
+    --primary: 357 79% 69%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary colors - subtle cream variation */
+    --secondary: 44 60% 85%;
+    --secondary-foreground: 0 0% 21%;
+
+    /* Muted colors - for less prominent elements */
+    --muted: 44 50% 80%;
+    --muted-foreground: 0 0% 40%;
+
+    /* Accent colors - coral for highlights */
+    --accent: 357 79% 69%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive colors - adjusted red with good contrast */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border colors - subtle charcoal tint */
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+
+    /* Ring colors - coral for focus states */
+    --ring: 357 79% 69%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Dark mode adjustments (optional - can be removed if not needed) */
+    --background: 0 0% 15%;
+    --foreground: 44 100% 89%;
+
+    --card: 0 0% 18%;
+    --card-foreground: 44 100% 89%;
+
+    --popover: 0 0% 18%;
+    --popover-foreground: 44 100% 89%;
+
+    --primary: 357 79% 69%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 25%;
+    --secondary-foreground: 44 100% 89%;
+
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 357 79% 69%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
+
+    --ring: 357 79% 69%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Enhanced button hover states with brand colors */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors;
+  }
+
+  /* Card with brand styling */
+  .card-brand {
+    @apply bg-card border border-border shadow-sm hover:shadow-md transition-shadow;
+  }
+
+  /* Text color utilities aligned with brand */
+  .text-brand-coral {
+    color: hsl(357, 79%, 69%);
+  }
+
+  .text-brand-charcoal {
+    color: hsl(0, 0%, 21%);
+  }
+
+  /* Success state using adjusted green for cream background */
+  .success-state {
+    @apply bg-green-100 text-green-800 border-green-300;
+  }
+
+  /* Warning state using adjusted yellow/orange for cream background */
+  .warning-state {
+    @apply bg-orange-100 text-orange-800 border-orange-300;
+  }
+
+  /* Link styling with brand coral */
+  .link-brand {
+    @apply text-primary hover:text-primary/80 underline-offset-4 hover:underline transition-colors;
+  }
+}
