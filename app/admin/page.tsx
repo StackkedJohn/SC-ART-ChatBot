@@ -33,9 +33,9 @@ const adminSections = [
 export default function AdminDashboard() {
   return (
     <div className="container py-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground">
+      <div className="pb-4 border-b border-brand-cream-slush/30">
+        <h1 className="text-4xl font-sans font-extrabold text-brand-sc-pink">Admin Dashboard</h1>
+        <p className="text-muted-foreground mt-2">
           Manage your knowledge base content, quizzes, and documents
         </p>
       </div>
@@ -45,14 +45,14 @@ export default function AdminDashboard() {
           const Icon = section.icon;
           return (
             <Link key={section.href} href={section.href}>
-              <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
+              <Card className="hover:bg-brand-barely-butter/50 hover:border-brand-sc-pink/30 transition-all cursor-pointer h-full">
                 <CardHeader>
                   <div className="flex items-center gap-4">
-                    <div className="rounded-lg bg-primary/10 p-3">
-                      <Icon className="h-6 w-6 text-primary" />
+                    <div className="rounded-lg bg-brand-sc-pink/10 p-3 border-2 border-brand-sc-pink/20">
+                      <Icon className="h-6 w-6 text-brand-sc-pink" />
                     </div>
                     <div>
-                      <CardTitle>{section.title}</CardTitle>
+                      <CardTitle className="text-brand-sc-pink">{section.title}</CardTitle>
                       <CardDescription>{section.description}</CardDescription>
                     </div>
                   </div>

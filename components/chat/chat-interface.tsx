@@ -130,11 +130,11 @@ export function ChatInterface() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="border-b bg-background p-4">
+      <div className="border-b border-brand-sc-pink/20 bg-brand-barely-butter/30 p-6">
         <div className="container flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Art Department Knowledge Base</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-3xl font-sans font-extrabold text-brand-sc-pink">SC-ART Knowledge Base</h1>
+            <p className="text-sm text-foreground/70 mt-1">
               Ask questions about processes, procedures, and training materials
             </p>
           </div>

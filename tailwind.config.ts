@@ -18,6 +18,12 @@ const config: Config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-noto-sans)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-passion-one)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-passion-one)', 'system-ui', 'sans-serif'],
+        alt: ['var(--font-open-sans)', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -52,15 +58,18 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // Brand colors - direct usage
+        // SC-ART Brand Colors from Brand Guide
         brand: {
-          coral: '#f1737a',
-          'coral-dark': '#e5565e',
-          'coral-light': '#f99ba0',
-          charcoal: '#363636',
-          'charcoal-light': '#585858',
-          cream: '#ffeec6',
-          'cream-dark': '#f5dfa7',
+          'cream-slush': '#f6912d',
+          'pool-blue': '#53cfdd',
+          'sennshine': '#fddd00',
+          'sc-pink': '#e96a6a',
+          'daylight': '#fffdf0',
+          'barely-butter': '#ffeec6',
+          // Variations for design flexibility
+          'cream-slush-dark': '#e37d1a',
+          'pool-blue-dark': '#3fb5c5',
+          'sc-pink-dark': '#e54e4e',
         },
       },
       borderRadius: {

@@ -42,7 +42,7 @@ export function SuggestedQuestions({ onSelect }: SuggestedQuestionsProps) {
               className="justify-start text-left h-auto py-3 px-4"
               onClick={() => onSelect(question)}
             >
-              <span className="text-sm">{question}</span>
+              <span className="text-sm font-sans tracking-normal leading-relaxed">{question}</span>
             </Button>
           ))}
         </CardContent>

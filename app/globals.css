@@ -4,50 +4,53 @@
 
 @layer base {
   :root {
-    /* Brand Colors:
-       - Primary/Accent: #f1737a (coral/salmon pink) - HSL(357, 79%, 69%)
-       - Dark/Text: #363636 (dark charcoal gray) - HSL(0, 0%, 21%)
-       - Light/Background: #ffeec6 (cream/light yellow) - HSL(44, 100%, 89%)
+    /* SC-ART Brand Colors from Brand Guide:
+       - Cream Slush: #f6912d (orange accent)
+       - Pool Blue: #53cfdd (cyan/turquoise)
+       - Sennshine: #fddd00 (bright yellow)
+       - SC Pink: #e96a6a (coral pink primary)
+       - Daylight: #fffdf0 (off-white background)
+       - Barely Butter: #ffeec6 (light cream)
     */
 
-    /* Background colors - using cream as primary background */
-    --background: 44 100% 89%;
-    --foreground: 0 0% 21%;
+    /* Background colors - using Daylight as primary background */
+    --background: 44 100% 99%;
+    --foreground: 0 0% 15%;
 
-    /* Card colors - slightly lighter cream for elevation */
-    --card: 44 100% 95%;
-    --card-foreground: 0 0% 21%;
+    /* Card colors - using Barely Butter for elevated surfaces */
+    --card: 44 100% 89%;
+    --card-foreground: 0 0% 15%;
 
     /* Popover colors */
-    --popover: 44 100% 95%;
-    --popover-foreground: 0 0% 21%;
+    --popover: 44 100% 89%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Primary colors - coral/salmon pink for interactive elements */
-    --primary: 357 79% 69%;
+    /* Primary colors - SC Pink for interactive elements */
+    --primary: 0 76% 67%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary colors - subtle cream variation */
-    --secondary: 44 60% 85%;
-    --secondary-foreground: 0 0% 21%;
+    /* Secondary colors - Pool Blue for secondary actions */
+    --secondary: 186 65% 60%;
+    --secondary-foreground: 0 0% 15%;
 
-    /* Muted colors - for less prominent elements */
-    --muted: 44 50% 80%;
-    --muted-foreground: 0 0% 40%;
+    /* Muted colors - softer Barely Butter tones */
+    --muted: 44 80% 85%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Accent colors - coral for highlights */
-    --accent: 357 79% 69%;
+    /* Accent colors - Cream Slush for highlights */
+    --accent: 24 91% 57%;
     --accent-foreground: 0 0% 100%;
 
     /* Destructive colors - adjusted red with good contrast */
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Border colors - subtle charcoal tint */
-    --border: 0 0% 85%;
-    --input: 0 0% 85%;
+    /* Border colors - subtle neutral tint */
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
 
-    /* Ring colors - coral for focus states */
-    --ring: 357 79% 69%;
+    /* Ring colors - SC Pink for focus states */
+    --ring: 0 76% 67%;
 
     --radius: 0.5rem;
   }
@@ -89,43 +92,116 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    /* Critical font rendering optimizations for crispness */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+    font-kerning: normal;
+  }
+
+  /* Typography hierarchy matching brand guide */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans font-extrabold;
+    letter-spacing: 0.01em;
+    /* Enhanced rendering for display fonts */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1 {
+    @apply text-5xl md:text-6xl lg:text-7xl;
+  }
+
+  h2 {
+    @apply text-4xl md:text-5xl;
+  }
+
+  h3 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h4 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h5 {
+    @apply text-xl md:text-2xl;
+  }
+
+  h6 {
+    @apply text-lg md:text-xl;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+    /* Optimized rendering for body text */
+    text-rendering: optimizeLegibility;
   }
 }
 
 @layer components {
   /* Enhanced button hover states with brand colors */
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-sans font-semibold;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors font-sans font-semibold;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-accent-foreground hover:bg-accent/90 transition-colors font-sans font-semibold;
   }
 
   /* Card with brand styling */
   .card-brand {
-    @apply bg-card border border-border shadow-sm hover:shadow-md transition-shadow;
+    @apply bg-card border border-border shadow-sm hover:shadow-md transition-shadow rounded-lg;
   }
 
-  /* Text color utilities aligned with brand */
-  .text-brand-coral {
-    color: hsl(357, 79%, 69%);
+  /* Text color utilities aligned with SC-ART brand */
+  .text-brand-pink {
+    @apply text-brand-sc-pink;
   }
 
-  .text-brand-charcoal {
-    color: hsl(0, 0%, 21%);
+  .text-brand-blue {
+    @apply text-brand-pool-blue;
   }
 
-  /* Success state using adjusted green for cream background */
+  .text-brand-orange {
+    @apply text-brand-cream-slush;
+  }
+
+  .text-brand-yellow {
+    @apply text-brand-sennshine;
+  }
+
+  /* Badge/Tag styling */
+  .tag-brand {
+    @apply inline-block px-3 py-1 text-sm font-sans font-bold rounded-full bg-accent text-accent-foreground;
+  }
+
+  /* Success state using brand-appropriate colors */
   .success-state {
-    @apply bg-green-100 text-green-800 border-green-300;
+    @apply bg-brand-pool-blue/20 text-brand-pool-blue-dark border-brand-pool-blue;
   }
 
-  /* Warning state using adjusted yellow/orange for cream background */
+  /* Warning state using brand yellow/orange */
   .warning-state {
-    @apply bg-orange-100 text-orange-800 border-orange-300;
+    @apply bg-brand-sennshine/20 text-brand-cream-slush-dark border-brand-cream-slush;
   }
 
-  /* Link styling with brand coral */
+  /* Link styling with brand pink */
   .link-brand {
     @apply text-primary hover:text-primary/80 underline-offset-4 hover:underline transition-colors;
+  }
+
+  /* Header text with Noto Sans font */
+  .text-display {
+    @apply font-sans font-extrabold uppercase tracking-wide;
   }
 }
