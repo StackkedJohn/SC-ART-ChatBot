@@ -37,7 +37,7 @@ export const LEVELS = [
  */
 export function calculateLevel(totalXP: number): LevelInfo {
   // Find the current level based on XP
-  let currentLevelData = LEVELS[0] // Default to level 1
+  let currentLevelData: typeof LEVELS[number] = LEVELS[0] // Default to level 1
 
   for (const levelData of LEVELS) {
     if (totalXP >= levelData.minXP && totalXP <= levelData.maxXP) {

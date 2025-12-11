@@ -61,7 +61,7 @@ export async function calculateXP(params: CalculateXPParams): Promise<XPCalculat
   // Fetch quiz difficulty and base XP
   const { data: quiz, error: quizError } = await supabaseAdmin
     .from('quizzes')
-    .select('difficulty_level, base_xp, time_limit_minutes')
+    .select('difficulty_level, base_xp, time_limit_minutes, passing_score')
     .eq('id', quizId)
     .single()
 
