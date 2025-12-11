@@ -1,9 +1,21 @@
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FolderTree, FileText, GraduationCap, Upload } from 'lucide-react';
+import { FolderTree, FileText, GraduationCap, Upload, Users, ClipboardList } from 'lucide-react';
 
 const adminSections = [
+  {
+    title: 'Users',
+    description: 'Invite users and manage roles and permissions',
+    icon: Users,
+    href: '/admin/users',
+  },
+  {
+    title: 'Onboarding',
+    description: 'Configure intern onboarding checklist and requirements',
+    icon: ClipboardList,
+    href: '/admin/onboarding',
+  },
   {
     title: 'Categories',
     description: 'Manage top-level content organization',

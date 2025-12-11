@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { SubcategoryList, SubcategoryListSkeleton } from '@/components/content/subcategory-list';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,34 @@ interface PageProps {
   }>;
 }
 
+async function createSupabaseClient() {
+  const cookieStore = await cookies();
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Server Component cookie setting may fail
+          }
+        },
+      },
+    }
+  );
+}
+
 async function getCategory(categoryId: string) {
+  const supabase = await createSupabaseClient();
+
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -28,6 +56,8 @@ async function getCategory(categoryId: string) {
 }
 
 async function getSubcategories(categoryId: string) {
+  const supabase = await createSupabaseClient();
+
   // Get subcategories with content count
   const { data, error } = await supabase
     .from('subcategories')
@@ -44,10 +74,10 @@ async function getSubcategories(categoryId: string) {
   }
 
   // Transform data to include content count
-  return data.map((sub) => ({
+  return data?.map((sub) => ({
     ...sub,
     content_count: Array.isArray(sub.content_items) ? sub.content_items.length : 0,
-  }));
+  })) || [];
 }
 
 async function SubcategoriesContent({ categoryId }: { categoryId: string }) {

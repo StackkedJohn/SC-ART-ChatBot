@@ -125,7 +125,19 @@ export default function TakeQuizPage() {
 
       const result = await response.json();
 
-      // Clear session storage
+      // Store gamification data in session storage for results page
+      if (result.xpEarned || result.leveledUp) {
+        sessionStorage.setItem('quiz_gamification_data', JSON.stringify({
+          xpEarned: result.xpEarned,
+          xpBreakdown: result.xpBreakdown,
+          leveledUp: result.leveledUp,
+          newLevel: result.newLevel,
+          previousLevel: result.previousLevel,
+          perfectStreakMultiplier: result.perfectStreakMultiplier,
+        }));
+      }
+
+      // Clear quiz session storage
       sessionStorage.removeItem('quiz_user_name');
       sessionStorage.removeItem('quiz_user_email');
 

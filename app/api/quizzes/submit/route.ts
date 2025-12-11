@@ -1,12 +1,21 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
+import { getCurrentUser } from '@/lib/auth';
+import { calculateXP, isFirstAttempt } from '@/lib/gamification/xp-calculator';
+import { checkLevelUp } from '@/lib/gamification/level-calculator';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { quizId, userName, userEmail, answers, startedAt, completedAt } = body;
+    // Get authenticated user
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    if (!quizId || !userName || !answers || !startedAt || !completedAt) {
+    const body = await request.json();
+    const { quizId, answers, startedAt, completedAt } = body;
+
+    if (!quizId || !answers || !startedAt || !completedAt) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -66,19 +75,46 @@ export async function POST(request: Request) {
       (new Date(completedAt).getTime() - new Date(startedAt).getTime()) / 1000
     );
 
-    // Create attempt record
+    // Check if this is first attempt at this quiz
+    const firstAttempt = await isFirstAttempt(currentUser.id, quizId);
+
+    // Get user's current stats for level-up detection
+    const { data: userStatsBefore } = await supabaseAdmin
+      .from('user_stats')
+      .select('total_xp')
+      .eq('user_id', currentUser.id)
+      .single();
+
+    const previousXP = userStatsBefore?.total_xp || 0;
+
+    // Calculate XP earned from this quiz attempt
+    const xpCalculation = await calculateXP({
+      quizId,
+      userId: currentUser.id,
+      score,
+      totalPoints,
+      percentage,
+      timeTaken: timeTakenSeconds,
+      isFirstAttempt: firstAttempt,
+    });
+
+    // Create attempt record with gamification data
     const { data: attempt, error: attemptError } = await supabaseAdmin
       .from('quiz_attempts')
       .insert({
         quiz_id: quizId,
-        user_name: userName,
-        user_email: userEmail || null,
+        user_id: currentUser.id,
+        user_name: currentUser.full_name || currentUser.email, // Keep for backward compat
+        user_email: currentUser.email,
         score,
         total_points: totalPoints,
         percentage,
         passed,
         answers,
         time_taken_seconds: timeTakenSeconds,
+        xp_earned: xpCalculation.totalXP,
+        speed_bonus_percent: xpCalculation.speedBonusPercent,
+        perfect_streak_multiplier: xpCalculation.perfectStreakMultiplier,
         started_at: startedAt,
         completed_at: completedAt,
       })
@@ -86,6 +122,9 @@ export async function POST(request: Request) {
       .single();
 
     if (attemptError) throw attemptError;
+
+    // Check if user leveled up
+    const levelUpInfo = checkLevelUp(previousXP, previousXP + xpCalculation.totalXP);
 
     // Update quiz statistics
     const { data: allAttempts, error: attemptsError } = await supabaseAdmin
@@ -111,6 +150,13 @@ export async function POST(request: Request) {
       totalPoints,
       percentage,
       passed,
+      // Gamification data
+      xpEarned: xpCalculation.totalXP,
+      xpBreakdown: xpCalculation.breakdown,
+      leveledUp: levelUpInfo.leveledUp,
+      newLevel: levelUpInfo.newLevel,
+      previousLevel: levelUpInfo.previousLevel,
+      perfectStreakMultiplier: xpCalculation.perfectStreakMultiplier,
     });
   } catch (error) {
     console.error('Error submitting quiz:', error);

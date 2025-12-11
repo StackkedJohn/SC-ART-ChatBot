@@ -7,18 +7,49 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Clock, TrendingUp, Home } from 'lucide-react';
 import Link from 'next/link';
 import { QuizQuestionComponent } from './quiz-question';
+import { XPEarnedDisplay } from '@/components/gamification/xp-earned-display';
+import { LevelUpCelebration } from '@/components/gamification/level-up-celebration';
 
 interface QuizResultsProps {
   quiz: Quiz;
   attempt: QuizAttempt;
   questions: QuizQuestion[];
+  // Gamification props
+  xpEarned?: number;
+  xpBreakdown?: string[];
+  leveledUp?: boolean;
+  newLevel?: number;
+  newLevelName?: string;
+  previousLevel?: number;
+  previousLevelName?: string;
 }
 
-export function QuizResults({ quiz, attempt, questions }: QuizResultsProps) {
+export function QuizResults({
+  quiz,
+  attempt,
+  questions,
+  xpEarned,
+  xpBreakdown,
+  leveledUp,
+  newLevel,
+  newLevelName,
+  previousLevel,
+  previousLevelName,
+}: QuizResultsProps) {
   const correctAnswers = questions.filter((q) => attempt.answers[q.id] === q.correct_answer).length;
 
   return (
     <div className="space-y-6">
+      {/* Level Up Celebration */}
+      {leveledUp && newLevel && newLevelName && previousLevel && previousLevelName && (
+        <LevelUpCelebration
+          previousLevel={previousLevel}
+          previousLevelName={previousLevelName}
+          newLevel={newLevel}
+          newLevelName={newLevelName}
+        />
+      )}
+
       <Card>
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -87,6 +118,16 @@ export function QuizResults({ quiz, attempt, questions }: QuizResultsProps) {
               </Card>
             )}
           </div>
+
+          {/* XP Earned Display */}
+          {xpEarned && xpBreakdown && xpBreakdown.length > 0 && (
+            <XPEarnedDisplay
+              xpEarned={xpEarned}
+              xpBreakdown={xpBreakdown}
+              speedBonusPercent={attempt.speed_bonus_percent}
+              perfectStreakMultiplier={attempt.perfect_streak_multiplier}
+            />
+          )}
 
           <div className="flex justify-center gap-4">
             <Button asChild variant="outline">

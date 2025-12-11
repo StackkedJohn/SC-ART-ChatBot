@@ -10,6 +10,32 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Server-side Supabase client with service role (for admin operations)
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
+// Auth types
+export type UserRole = 'admin' | 'artist' | 'intern';
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  role: UserRole;
+  invited_by?: string;
+  is_active: boolean;
+  has_seen_welcome?: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserInvitation {
+  id: string;
+  email: string;
+  role: UserRole;
+  invited_by: string;
+  token: string;
+  expires_at: string;
+  accepted_at?: string;
+  created_at: string;
+}
+
 // Database types
 export interface Category {
   id: string;
@@ -53,6 +79,8 @@ export interface DocumentChunk {
   created_at: string;
 }
 
+export type QuizCategory = 'artist_standard' | 'intern_standard' | 'custom';
+
 export interface Quiz {
   id: string;
   title: string;
@@ -63,6 +91,8 @@ export interface Quiz {
   is_published: boolean;
   total_attempts: number;
   average_score?: number;
+  quiz_category: QuizCategory;
+  target_role?: string;
   created_at: string;
   updated_at: string;
 }
@@ -83,6 +113,7 @@ export interface QuizQuestion {
 export interface QuizAttempt {
   id: string;
   quiz_id: string;
+  user_id?: string;
   user_name: string;
   user_email?: string;
   score: number;
@@ -91,6 +122,9 @@ export interface QuizAttempt {
   passed: boolean;
   answers: Record<string, string>;
   time_taken_seconds?: number;
+  xp_earned?: number;
+  speed_bonus_percent?: number;
+  perfect_streak_multiplier?: number;
   started_at: string;
   completed_at: string;
 }
@@ -105,4 +139,90 @@ export interface UploadedDocument {
   error_message?: string;
   created_at: string;
   processed_at?: string;
+}
+
+// Onboarding types
+export type OnboardingItemType =
+  | 'profile_update'
+  | 'handbook_review'
+  | 'task_completion'
+  | 'quiz'
+  | 'manager_qa'
+  | 'verification';
+
+export type ChecklistItemStatus = 'pending' | 'in_progress' | 'completed';
+
+export type QASessionStatus = 'not_scheduled' | 'scheduled' | 'completed' | 'cancelled';
+
+export interface OnboardingChecklistItem {
+  id: string;
+  title: string;
+  description: string;
+  item_type: OnboardingItemType;
+  display_order: number;
+  is_required: boolean;
+  archived: boolean;
+  config: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+  created_by?: string;
+}
+
+export interface InternChecklistProgress {
+  id: string;
+  user_id: string;
+  checklist_item_id: string;
+  status: ChecklistItemStatus;
+  started_at?: string;
+  completed_at?: string;
+  progress_data: Record<string, any>;
+  requires_verification: boolean;
+  verified: boolean;
+  verified_by?: string;
+  verified_at?: string;
+  intern_notes?: string;
+  admin_notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface InternProfileData {
+  user_id: string;
+  profile_picture_url?: string;
+  bio?: string;
+  phone?: string;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  start_date?: string;
+  onboarding_completed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ManagerQASession {
+  id: string;
+  intern_id: string;
+  manager_id?: string;
+  status: QASessionStatus;
+  scheduled_at?: string;
+  duration_minutes?: number;
+  agenda?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+}
+
+export interface OnboardingProgress {
+  total_items: number;
+  required_items: number;
+  completed_items: number;
+  completed_required_items: number;
+  completion_percentage: number;
+  is_complete: boolean;
+}
+
+export interface ChecklistItemWithProgress extends OnboardingChecklistItem {
+  progress?: InternChecklistProgress;
+  quiz_passed?: boolean;
 }

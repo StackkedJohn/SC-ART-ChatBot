@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Quiz, Subcategory } from '@/lib/supabase';
+import { Quiz, Subcategory, QuizCategory } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -25,6 +25,8 @@ export interface QuizFormData {
   time_limit_minutes: number | null;
   passing_score: number;
   is_published: boolean;
+  quiz_category: QuizCategory;
+  target_role?: string;
 }
 
 export function QuizForm({ quiz, subcategories, onSubmit, onCancel, isSubmitting = false }: QuizFormProps) {
@@ -35,6 +37,8 @@ export function QuizForm({ quiz, subcategories, onSubmit, onCancel, isSubmitting
     time_limit_minutes: quiz?.time_limit_minutes || null,
     passing_score: quiz?.passing_score || 70,
     is_published: quiz?.is_published || false,
+    quiz_category: quiz?.quiz_category || 'custom',
+    target_role: quiz?.target_role || '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,6 +102,43 @@ export function QuizForm({ quiz, subcategories, onSubmit, onCancel, isSubmitting
               </SelectContent>
             </Select>
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="quizCategory">Quiz Category *</Label>
+            <Select
+              value={formData.quiz_category}
+              onValueChange={(value) => setFormData({ ...formData, quiz_category: value as QuizCategory })}
+            >
+              <SelectTrigger id="quizCategory">
+                <SelectValue placeholder="Select quiz category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="artist_standard">Artist Standard Test</SelectItem>
+                <SelectItem value="intern_standard">Intern Standard Test</SelectItem>
+                <SelectItem value="custom">Custom/Additional Test</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-muted-foreground">
+              {formData.quiz_category === 'artist_standard' && 'Required tests for artists at specific levels or job descriptions'}
+              {formData.quiz_category === 'intern_standard' && 'Required tests for all interns during onboarding'}
+              {formData.quiz_category === 'custom' && 'Custom or supplementary tests for continued learning'}
+            </p>
+          </div>
+
+          {formData.quiz_category === 'artist_standard' && (
+            <div className="space-y-2">
+              <Label htmlFor="targetRole">Target Role/Level</Label>
+              <Input
+                id="targetRole"
+                value={formData.target_role || ''}
+                onChange={(e) => setFormData({ ...formData, target_role: e.target.value })}
+                placeholder="e.g., Junior Artist, Senior Artist, Lead Artist"
+              />
+              <p className="text-sm text-muted-foreground">
+                Specify the artist level or job description this test is for
+              </p>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

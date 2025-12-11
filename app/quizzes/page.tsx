@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { Quiz } from '@/lib/supabase';
 import { QuizCard } from '@/components/quiz/quiz-card';
-import { Loader2, BookOpen } from 'lucide-react';
+import { Loader2, BookOpen, Palette, GraduationCap, Sparkles } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function QuizzesPage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -26,6 +27,19 @@ export default function QuizzesPage() {
     }
   };
 
+  // Organize quizzes by category
+  const artistQuizzes = quizzes.filter(q => q.quiz_category === 'artist_standard');
+  const internQuizzes = quizzes.filter(q => q.quiz_category === 'intern_standard');
+  const customQuizzes = quizzes.filter(q => q.quiz_category === 'custom');
+
+  // Group artist quizzes by target role
+  const artistQuizzesByRole = artistQuizzes.reduce((acc, quiz) => {
+    const role = quiz.target_role || 'General';
+    if (!acc[role]) acc[role] = [];
+    acc[role].push(quiz);
+    return acc;
+  }, {} as Record<string, Quiz[]>);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -35,7 +49,7 @@ export default function QuizzesPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="container mx-auto py-8 space-y-8">
       <div className="text-center space-y-2">
         <div className="flex items-center justify-center gap-3">
           <BookOpen className="h-8 w-8 text-primary" />
@@ -55,14 +69,81 @@ export default function QuizzesPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quizzes.map((quiz) => (
-            <QuizCard
-              key={quiz.id}
-              quiz={quiz}
-              href={`/quizzes/${quiz.id}`}
-            />
-          ))}
+        <div className="space-y-12">
+          {/* Section 1: Artist Standard Tests */}
+          {artistQuizzes.length > 0 && (
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-b pb-3">
+                <Palette className="h-6 w-6 text-brand-sc-pink" />
+                <h2 className="text-3xl font-bold">Artist Standard Tests</h2>
+              </div>
+              <p className="text-muted-foreground">
+                Required tests for artists at each level or job description
+              </p>
+
+              {Object.entries(artistQuizzesByRole).map(([role, roleQuizzes]) => (
+                <div key={role} className="space-y-4">
+                  <h3 className="text-xl font-semibold text-brand-sc-pink flex items-center gap-2">
+                    <span className="w-2 h-2 bg-brand-sc-pink rounded-full"></span>
+                    {role}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {roleQuizzes.map((quiz) => (
+                      <QuizCard
+                        key={quiz.id}
+                        quiz={quiz}
+                        href={`/quizzes/${quiz.id}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* Section 2: Intern Standard Tests */}
+          {internQuizzes.length > 0 && (
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-b pb-3">
+                <GraduationCap className="h-6 w-6 text-brand-barely-butter" />
+                <h2 className="text-3xl font-bold">Intern Standard Tests</h2>
+              </div>
+              <p className="text-muted-foreground">
+                Required tests for all interns during onboarding and training
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {internQuizzes.map((quiz) => (
+                  <QuizCard
+                    key={quiz.id}
+                    quiz={quiz}
+                    href={`/quizzes/${quiz.id}`}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Section 3: Custom/Random Tests */}
+          {customQuizzes.length > 0 && (
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-b pb-3">
+                <Sparkles className="h-6 w-6 text-brand-cream-slush" />
+                <h2 className="text-3xl font-bold">Additional Tests</h2>
+              </div>
+              <p className="text-muted-foreground">
+                Custom and supplementary tests for continued learning
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {customQuizzes.map((quiz) => (
+                  <QuizCard
+                    key={quiz.id}
+                    quiz={quiz}
+                    href={`/quizzes/${quiz.id}`}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
     </div>

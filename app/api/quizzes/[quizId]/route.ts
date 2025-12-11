@@ -48,6 +48,8 @@ export async function PUT(request: Request, context: { params: Promise<{ quizId:
           time_limit_minutes: quiz.time_limit_minutes || null,
           passing_score: quiz.passing_score,
           is_published: quiz.is_published,
+          quiz_category: quiz.quiz_category || 'custom',
+          target_role: quiz.target_role || null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', quizId);

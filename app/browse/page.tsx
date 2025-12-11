@@ -1,9 +1,33 @@
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { CategoryCard, CategoryCardSkeleton } from '@/components/content/category-card';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import { Suspense } from 'react';
 
 async function getCategories() {
+  const cookieStore = await cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Server Component cookie setting may fail
+          }
+        },
+      },
+    }
+  );
+
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -14,7 +38,7 @@ async function getCategories() {
     return [];
   }
 
-  return data;
+  return data || [];
 }
 
 async function CategoriesGrid() {

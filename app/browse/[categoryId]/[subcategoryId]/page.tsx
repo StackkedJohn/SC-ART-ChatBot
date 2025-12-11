@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,7 +17,34 @@ interface PageProps {
   }>;
 }
 
+async function createSupabaseClient() {
+  const cookieStore = await cookies();
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Server Component cookie setting may fail
+          }
+        },
+      },
+    }
+  );
+}
+
 async function getCategory(categoryId: string) {
+  const supabase = await createSupabaseClient();
+
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -31,6 +59,8 @@ async function getCategory(categoryId: string) {
 }
 
 async function getSubcategory(subcategoryId: string) {
+  const supabase = await createSupabaseClient();
+
   const { data, error } = await supabase
     .from('subcategories')
     .select('*')
@@ -45,6 +75,8 @@ async function getSubcategory(subcategoryId: string) {
 }
 
 async function getContentItems(subcategoryId: string) {
+  const supabase = await createSupabaseClient();
+
   const { data, error } = await supabase
     .from('content_items')
     .select('*')
@@ -57,7 +89,7 @@ async function getContentItems(subcategoryId: string) {
     return [];
   }
 
-  return data;
+  return data || [];
 }
 
 function ContentItemCard({ item, categoryId, subcategoryId }: any) {

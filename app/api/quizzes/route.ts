@@ -26,10 +26,14 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, description, subcategory_id, time_limit_minutes, passing_score, is_published } = body;
+    const { title, description, subcategory_id, time_limit_minutes, passing_score, is_published, quiz_category, target_role } = body;
 
     if (!title || typeof passing_score !== 'number') {
       return NextResponse.json({ error: 'Title and passing score are required' }, { status: 400 });
+    }
+
+    if (!quiz_category) {
+      return NextResponse.json({ error: 'Quiz category is required' }, { status: 400 });
     }
 
     const { data: quiz, error } = await supabaseAdmin
@@ -41,6 +45,8 @@ export async function POST(request: Request) {
         time_limit_minutes: time_limit_minutes || null,
         passing_score,
         is_published: is_published || false,
+        quiz_category: quiz_category || 'custom',
+        target_role: target_role || null,
         total_attempts: 0,
       })
       .select()
