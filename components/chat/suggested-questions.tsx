@@ -1,8 +1,9 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
+import { RecentActivity } from './recent-activity';
 
-const suggestedQuestions = [
+const fallbackQuestions = [
   "What's the discharge rate for Heather Royal?",
   'How do I create a new design template?',
   'What are the responsibilities of a Staff Artist?',
@@ -30,16 +31,20 @@ export function SuggestedQuestions({ onSelect }: SuggestedQuestionsProps) {
         </p>
       </div>
 
+      {/* Dynamic recent activity and FAQs */}
+      <RecentActivity onSelect={onSelect} />
+
+      {/* Fallback suggested questions (shown if no recent activity) */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Suggested Questions</CardTitle>
+          <CardTitle className="text-sm">Getting Started</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-2 sm:grid-cols-2">
-          {suggestedQuestions.map((question, index) => (
+          {fallbackQuestions.map((question, index) => (
             <Button
               key={index}
               variant="outline"
-              className="justify-start text-left h-auto py-3 px-4"
+              className="justify-start text-left h-auto py-3 px-4 hover:bg-brand-barely-butter/50 hover:border-brand-sc-pink/30"
               onClick={() => onSelect(question)}
             >
               <span className="text-sm font-sans tracking-normal leading-relaxed">{question}</span>

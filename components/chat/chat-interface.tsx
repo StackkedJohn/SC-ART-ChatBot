@@ -46,6 +46,13 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
+    // Save query to database (non-blocking)
+    fetch('/api/chat/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: content }),
+    }).catch((err) => console.error('Failed to save query:', err));
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
