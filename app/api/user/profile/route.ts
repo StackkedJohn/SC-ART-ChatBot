@@ -1,30 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
-import { getUser } from '@/lib/auth';
+import { NextResponse } from 'next/server';
+import { getCurrentUser } from '@/lib/auth';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const user = await getUser(req);
+    const profile = await getCurrentUser();
 
-    if (!user) {
+    if (!profile) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
-      );
-    }
-
-    // Get user profile
-    const { data: profile, error } = await supabaseAdmin
-      .from('user_profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    if (error) {
-      console.error('Error fetching user profile:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch profile' },
-        { status: 500 }
       );
     }
 

@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
       item_type,
       display_order,
       is_required,
-      is_active,
       config,
       created_by,
     } = body;
@@ -41,7 +40,6 @@ export async function POST(req: NextRequest) {
       item_type,
       display_order: display_order || 0,
       is_required: is_required ?? true,
-      is_active: is_active ?? true,
       config: config || {},
       created_by,
     });

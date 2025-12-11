@@ -7,9 +7,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 interface EditChecklistItemPageProps {
-  params: {
+  params: Promise<{
     itemId: string;
-  };
+  }>;
 }
 
 export default async function EditChecklistItemPage({ params }: EditChecklistItemPageProps) {
@@ -19,7 +19,8 @@ export default async function EditChecklistItemPage({ params }: EditChecklistIte
     redirect('/login');
   }
 
-  const item = await getChecklistItem(params.itemId);
+  const { itemId } = await params;
+  const item = await getChecklistItem(itemId);
 
   if (!item) {
     notFound();

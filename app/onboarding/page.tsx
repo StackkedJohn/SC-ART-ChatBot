@@ -30,7 +30,7 @@ export default async function OnboardingPage() {
   const progressData = {
     percentage: stats.completion_percentage,
     items: items.map((item) => ({
-      id: item.checklist_item_id, // Use checklist_item_id from the view
+      id: item.id, // Use id from OnboardingChecklistItem
       title: item.title,
       type: item.item_type,
       status: item.progress?.status || 'pending',
@@ -100,9 +100,9 @@ export default async function OnboardingPage() {
         <div className="space-y-4 mt-8">
           {items.map((item) => (
             <ChecklistItemCard
-              key={item.checklist_item_id}
+              key={item.id}
               item={{
-                id: item.checklist_item_id,
+                id: item.id,
                 title: item.title,
                 description: item.description,
                 item_type: item.item_type,

@@ -29,8 +29,7 @@ export function WelcomeDialog({ userName, onComplete }: WelcomeDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent
-        className="max-w-2xl p-0 gap-0 overflow-hidden border-4 border-brand-sc-pink"
-        hideClose
+        className="max-w-2xl p-0 gap-0 overflow-hidden border-4 border-brand-sc-pink [&>button]:hidden"
       >
         {/* Header with Sunday Cool branding */}
         <div className="bg-gradient-to-br from-brand-sc-pink via-brand-barely-butter to-brand-cream-slush p-8 text-center">
